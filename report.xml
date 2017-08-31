@@ -1,0 +1,16 @@
+<Report TimeCreated="30/08/2017 10:20:01">
+    <DAG_START>29.08.2017</DAG_START>
+    <TIJD_START>08:00</TIJD_START>
+    <DAG_STOP>30.08.2017</DAG_STOP>
+    <TIJD_STOP>07:59</TIJD_STOP>
+    <Aantal_bonnen code="1000">176</Aantal_bonnen>
+    <Gemiddeld code="2000">26.2</Gemiddeld>
+    <Bruto code="3000">4610.5</Bruto>
+    <Netto code="3005">4610.5</Netto>
+    <Geld_in_lade code="8000">4610.5</Geld_in_lade>
+    <EXCL_BTW_laag code="9000">3391.32</EXCL_BTW_laag>
+    <BTW_laag_6 code="9001">203.48</BTW_laag_6>
+    <EXCL_BTW_hoog code="9002">839.42</EXCL_BTW_hoog>
+    <BTW_hoog_21 code="9003">176.28</BTW_hoog_21>
+    <Keuken code="1003">2652.8</Keuken>
+</Report>
