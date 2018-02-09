@@ -11,21 +11,24 @@ import (
 type Report struct {
 	// XMLName xml.Name `xml:"Report"`
 
-	TimeCreated  DateTime     `xml:"TimeCreated,attr"`
-	AantalBonnen AantalBonnen `xml:"Aantal_bonnen"`
-	BTWHoog21    BTWHoog21    `xml:"BTW_hoog_21"`
-	BTWLaag6     BTWLaag6     `xml:"BTW_laag_6"`
-	Bruto        Bruto        `xml:"Bruto"`
-	DagStart     Date         `xml:"DAG_START"`
-	DagStop      Date         `xml:"DAG_STOP"`
-	ExclBTWHoog  ExclBTWHoog  `xml:"EXCL_BTW_hoog"`
-	ExclBTWLaag  ExclBTWLaag  `xml:"EXCL_BTW_laag"`
-	GeldInLade   GeldInLade   `xml:"Geld_in_lade"`
-	Gemiddeld    Gemiddeld    `xml:"Gemiddeld"`
-	Keuken       Keuken       `xml:"Keuken"`
-	Netto        Netto        `xml:"Netto"`
-	TijdStart    Time         `xml:"TIJD_START"`
-	TijdStop     Time         `xml:"TIJD_STOP"`
+	TimeCreated DateTime `xml:"TimeCreated,attr"`
+	DagStart    Date     `xml:"DAG_START"`
+	DagStop     Date     `xml:"DAG_STOP"`
+	TijdStart   Time     `xml:"TIJD_START"`
+	TijdStop    Time     `xml:"TIJD_STOP"`
+
+	// fixed items
+	AantalBonnen ReportItem `xml:"Aantal_bonnen"`
+	BTWHoog21    ReportItem `xml:"BTW_hoog_21"`
+	BTWLaag6     ReportItem `xml:"BTW_laag_6"`
+	ExclBTWHoog  ReportItem `xml:"EXCL_BTW_hoog"`
+	ExclBTWLaag  ReportItem `xml:"EXCL_BTW_laag"`
+	Bruto        ReportItem `xml:"Bruto"`
+	Gemiddeld    ReportItem `xml:"Gemiddeld"`
+	Netto        ReportItem `xml:"Netto"`
+
+	// Custom per sync
+	CustomItems ReportItems `xml:",any"`
 }
 
 type DateTime struct {
@@ -65,19 +68,48 @@ func (dt DateTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dt.Time.Format(layout))
 }
 
-type AantalBonnen struct {
-	Code  string `xml:"code,attr"`
-	Value string `xml:",chardata"`
+type ReportItems []ReportItem
+
+func (items ReportItems) GetByName(name string) (ReportItem, bool) {
+	for _, item := range items {
+		if item.Name == name {
+			return item, true
+		}
+	}
+
+	return ReportItem{}, false
 }
 
-type Gemiddeld struct {
-	Code  string `xml:"code,attr"`
-	Value string `xml:",chardata"`
+func (items ReportItems) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	type Alias ReportItems
+
+	for _, item := range items {
+		start.Name.Local = item.Name
+		err := e.EncodeElement(item, start)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
-type Bruto struct {
-	Code  string `xml:"code,attr"`
-	Value string `xml:",chardata"`
+type ReportItem struct {
+	Name  string  `xml:"-"`
+	Code  string  `xml:"code,attr"`
+	Value float64 `xml:",chardata"`
+}
+
+func (ri *ReportItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type Alias ReportItem
+	alias := (*Alias)(ri)
+	ri.Name = start.Name.Local
+
+	err := d.DecodeElement(alias, &start)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 type Date struct {
@@ -116,41 +148,6 @@ func (dt *Date) UnmarshalJSON(data []byte) error {
 
 func (dt Date) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dt.Time)
-}
-
-type Netto struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type GeldInLade struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type ExclBTWLaag struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type BTWLaag6 struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type ExclBTWHoog struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type BTWHoog21 struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
-}
-
-type Keuken struct {
-	Code  string  `xml:"code,attr"`
-	Value float64 `xml:",chardata"`
 }
 
 type Time struct {
