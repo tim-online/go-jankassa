@@ -23,7 +23,7 @@ type Report struct {
 	BTWLaag6     ReportItem `xml:"BTW_laag_6"`
 	ExclBTWHoog  ReportItem `xml:"EXCL_BTW_hoog"`
 	ExclBTWLaag  ReportItem `xml:"EXCL_BTW_laag"`
-	TotaalVAT    ReportItem `xml:"Totaal_VAT"`
+	Totaal       ReportItem `xml:"Totaal"`
 	Bruto        ReportItem `xml:"Bruto"`
 	Gemiddeld    ReportItem `xml:"Gemiddeld"`
 	Netto        ReportItem `xml:"Netto"`
