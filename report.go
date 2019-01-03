@@ -21,6 +21,7 @@ type Report struct {
 	AantalBonnen ReportItem `xml:"Aantal_bonnen"`
 	BTWHoog21    ReportItem `xml:"BTW_hoog_21"`
 	BTWLaag6     ReportItem `xml:"BTW_laag_6"`
+	BTWLaag9     ReportItem `xml:"BTW_laag_9"`
 	ExclBTWHoog  ReportItem `xml:"EXCL_BTW_hoog"`
 	ExclBTWLaag  ReportItem `xml:"EXCL_BTW_laag"`
 	TotaalBTW    ReportItem `xml:"Totaal_BTW"`
