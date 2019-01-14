@@ -24,6 +24,7 @@ type Report struct {
 	BTWLaag9     ReportItem `xml:"BTW_laag_9"`
 	ExclBTWHoog  ReportItem `xml:"EXCL_BTW_hoog"`
 	ExclBTWLaag  ReportItem `xml:"EXCL_BTW_laag"`
+	ExclBTWLaag9 ReportItem `xml:"EXCL_BTW_laag_9"`
 	TotaalBTW    ReportItem `xml:"Totaal_BTW"`
 	BTWVrij      ReportItem `xml:"BTW_vrij"`
 	ExclBTWVrij  ReportItem `xml:"EXCL_BTW_vrij"`
