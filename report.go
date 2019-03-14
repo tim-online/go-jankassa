@@ -3,6 +3,8 @@ package jankassa
 import (
 	"encoding/json"
 	"encoding/xml"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/aodin/date"
@@ -37,6 +39,26 @@ type Report struct {
 	CustomItems ReportItems `xml:",any"`
 }
 
+func (r Report) Items() ReportItems {
+	items := ReportItems{
+		r.AantalBonnen,
+		r.BTWHoog21,
+		r.BTWLaag6,
+		r.ExclBTWHoog,
+		r.ExclBTWLaag,
+		r.ExclBTWLaag9,
+		r.TotaalBTW,
+		r.BTWVrij,
+		r.ExclBTWVrij,
+		r.Totaal,
+		r.Bruto,
+		r.Gemiddeld,
+		r.Netto,
+	}
+	items = append(items, r.CustomItems...)
+	return items
+}
+
 type DateTime struct {
 	time.Time
 }
@@ -44,6 +66,12 @@ type DateTime struct {
 func (dt *DateTime) UnmarshalXMLAttr(attr xml.Attr) error {
 	var err error
 	layout := "02/01/2006 15:04:05"
+	dt.Time, err = time.Parse(layout, attr.Value)
+	if err == nil {
+		return nil
+	}
+
+	layout = "02-1-2006 15:04:05"
 	dt.Time, err = time.Parse(layout, attr.Value)
 	return err
 }
@@ -65,6 +93,12 @@ func (dt *DateTime) UnmarshalJSON(data []byte) error {
 	}
 
 	layout := "02/01/2006 15:04:05"
+	dt.Time, err = time.Parse(layout, value)
+	if err == nil {
+		return nil
+	}
+
+	layout = "02-1-2006 15:04:05"
 	dt.Time, err = time.Parse(layout, value)
 	return err
 }
@@ -107,14 +141,27 @@ type ReportItem struct {
 }
 
 func (ri *ReportItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	type Alias ReportItem
-	alias := (*Alias)(ri)
-	ri.Name = start.Name.Local
+	type Alias struct {
+		Name  string `xml:"-"`
+		Code  string `xml:"code,attr"`
+		Value string `xml:",chardata"`
+	}
+	alias := Alias{}
 
-	err := d.DecodeElement(alias, &start)
+	err := d.DecodeElement(&alias, &start)
 	if err != nil {
 		return err
 	}
+
+	str := strings.Replace(alias.Value, ",", ".", -1)
+	f, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		return err
+	}
+
+	ri.Name = start.Name.Local
+	ri.Code = alias.Code
+	ri.Value = f
 	return nil
 }
 
