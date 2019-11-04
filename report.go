@@ -73,6 +73,16 @@ func (dt *DateTime) UnmarshalXMLAttr(attr xml.Attr) error {
 
 	layout = "02-1-2006 15:04:05"
 	dt.Time, err = time.Parse(layout, attr.Value)
+	if err == nil {
+		return nil
+	}
+
+	layout = "2-1-2006 15:04:05"
+	dt.Time, err = time.Parse(layout, attr.Value)
+	if err == nil {
+		return nil
+	}
+
 	return err
 }
 
@@ -100,6 +110,16 @@ func (dt *DateTime) UnmarshalJSON(data []byte) error {
 
 	layout = "02-1-2006 15:04:05"
 	dt.Time, err = time.Parse(layout, value)
+	if err == nil {
+		return nil
+	}
+
+	layout = "2-1-2006 15:04:05"
+	dt.Time, err = time.Parse(layout, value)
+	if err == nil {
+		return nil
+	}
+
 	return err
 }
 
