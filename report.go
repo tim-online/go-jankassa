@@ -30,6 +30,7 @@ type Report struct {
 	TotaalBTW    ReportItem `xml:"Totaal_BTW"`
 	BTWVrij      ReportItem `xml:"BTW_vrij"`
 	ExclBTWVrij  ReportItem `xml:"EXCL_BTW_vrij"`
+	ExclBTWNul   ReportItem `xml:"EXCL._BTWnul"`
 	Totaal       ReportItem `xml:"Totaal"`
 	Bruto        ReportItem `xml:"Bruto"`
 	Gemiddeld    ReportItem `xml:"Gemiddeld"`
@@ -50,6 +51,7 @@ func (r Report) Items() ReportItems {
 		r.TotaalBTW,
 		r.BTWVrij,
 		r.ExclBTWVrij,
+		r.ExclBTWNul,
 		r.Totaal,
 		r.Bruto,
 		r.Gemiddeld,
